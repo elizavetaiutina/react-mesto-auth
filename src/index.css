@@ -8,6 +8,7 @@
 /*HEADER*/
 @import url(./blocks/header/header.css);
 @import url(./blocks/logo/logo.css);
+@import url(./blocks/header/header__link/header__link.css);
 
 /*MAIN*/
 @import url(./blocks/main/main.css);
@@ -22,6 +23,8 @@
 
 @import url(./blocks/pop-up/__container/pop-up__container.css);
 @import url(./blocks/pop-up/__title/pop-up__title.css);
+@import url(./blocks/pop-up/__text/pop-up__text.css);
+@import url(./blocks/pop-up/__img/pop-up__img.css);
 @import url(./blocks/form/form.css);
 @import url(./blocks/form/__span-error/form__span-error.css);
 @import url(./blocks/form/__span-error/_active/form__span-error_active.css);
@@ -69,3 +72,7 @@
 /*FOOTER*/
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);
+
+/*REGISTER*/
+@import url(./blocks/sign/sign.css);
+@import url(./blocks/form-sign/form-sign.css);
