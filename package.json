@@ -41,16 +41,5 @@
   },
   "devDependencies": {
     "gh-pages": "^5.0.0"
-  },
-  "description": "---",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/elizavetaiutina/react-mesto-auth.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/elizavetaiutina/react-mesto-auth/issues"
   }
 }
