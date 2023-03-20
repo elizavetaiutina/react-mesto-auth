@@ -12,6 +12,8 @@ import DeleteCardPopup from "./DeleteCardPopup";
 import ImagePopup from "./ImagePopup";
 import Register from "./Register";
 import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
+import PageNotFound from "./PageNotFound";
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -170,55 +172,54 @@ function App() {
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <CurrentUserContext.Provider value={currentUser}>
-          <Routes>
-            <Route path="/sign-up" element={<Register />} />
-            <Route path="/sign-in" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <Main
-                  cards={arrayCards}
-                  onEditProfile={handleEditProfileClick}
-                  onAddPlace={handleAddPlaceClick}
-                  onEditAvatar={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleDeleteClick}
-                />
-              }
-            />
-          </Routes>
-          <Footer />
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            isLoading={isLoading}
-            onUpdateUser={handleUpdateUser}
+      <CurrentUserContext.Provider value={currentUser}>
+        <Routes>
+          <Route path="/sign-up" element={<Register />} />
+          <Route path="/sign-in" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <Main
+                cards={arrayCards}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleDeleteClick}
+              />
+            }
           />
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            isLoading={isLoading}
-            onAddPlace={handleAddPlaceSubmit}
-          />
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            isLoading={isLoading}
-            onUpdateAvatar={handleUpdateAvatar}
-          />
-          <DeleteCardPopup
-            isOpen={isDeleteCardPopupOpen}
-            onClose={closeAllPopups}
-            isLoading={isLoading}
-            onDeleteCard={handleCardDelete}
-            card={selectedCard}
-          />
-          <ImagePopup card={selectedCard} isOpen={isCardPopupOpen} onClose={closeAllPopups} />
-        </CurrentUserContext.Provider>
-      </BrowserRouter>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+        <Footer />
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          isLoading={isLoading}
+          onUpdateUser={handleUpdateUser}
+        />
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          isLoading={isLoading}
+          onAddPlace={handleAddPlaceSubmit}
+        />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          isLoading={isLoading}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
+        <DeleteCardPopup
+          isOpen={isDeleteCardPopupOpen}
+          onClose={closeAllPopups}
+          isLoading={isLoading}
+          onDeleteCard={handleCardDelete}
+          card={selectedCard}
+        />
+        <ImagePopup card={selectedCard} isOpen={isCardPopupOpen} onClose={closeAllPopups} />
+      </CurrentUserContext.Provider>
     </div>
   );
 }

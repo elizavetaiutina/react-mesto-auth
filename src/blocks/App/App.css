@@ -1,5 +1,6 @@
 .App {
   max-width: 880px;
+  min-height: 100vh;
   box-sizing: border-box;
   margin: 0 auto;
   padding: 0;
@@ -12,4 +13,8 @@
   -ms-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

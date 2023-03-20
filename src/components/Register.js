@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "./Header";
 import InfoTooltip from "./InfoTooltip";
 import imgSuccess from "../images/success.svg";
@@ -10,8 +11,8 @@ function Register() {
   return (
     <>
       <InfoTooltip imgPopup={imgSuccess} isOpen={isInfoTooltipPopupOpen} />
-      <Header namelink="Войти" />
-      <div className="sign">
+      <Header namelink="Войти" link="sign-in" />
+      <main className="sign">
         <h1 className="sign__title">Регистрация</h1>
         <form name="register" className="form-sign form-sign_type_register">
           <input
@@ -34,11 +35,11 @@ function Register() {
         </form>
         <p className="sign__text">
           Уже зарегистрированы?{" "}
-          <a href="#" className="sign__link">
+          <Link to="/sign-in" className="sign__link">
             Войти
-          </a>
+          </Link>
         </p>
-      </div>
+      </main>
     </>
   );
 }

@@ -3,8 +3,8 @@ import Header from "./Header";
 function Login() {
   return (
     <>
-      <Header namelink="Регистрация" />
-      <div className="sign">
+      <Header namelink="Регистрация" link="sign-up" />
+      <main className="sign">
         <h1 className="sign__title">Вход</h1>
         <form name="register" className="form-sign form-sign_type_register">
           <input
@@ -25,7 +25,7 @@ function Login() {
             Войти
           </button>
         </form>
-      </div>
+      </main>
     </>
   );
 }
