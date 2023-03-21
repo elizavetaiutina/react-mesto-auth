@@ -4,16 +4,12 @@ class Auth {
   }
 
   _request(url, options) {
-    return fetch(url, options)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(`Ошибка: ${response.status}`);
-      })
-      .then((res) => {
-        return res;
-      });
+    return fetch(url, options).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(`Ошибка: ${response.status}`);
+    });
   }
 
   register(password, email) {
@@ -23,6 +19,21 @@ class Auth {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ password: `${password}`, email: `${email}` }),
+    });
+  }
+
+  authorize(password, email) {
+    return this._request(`${this._url}/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: `${password}`, email: `${email}` }),
+    }).then((data) => {
+      if (data) {
+        localStorage.setItem("jwt", data.token);
+        return data;
+      }
     });
   }
 }
