@@ -16,7 +16,7 @@ function Main({
 
   return (
     <>
-      <Header namelink="Выйти" link="sign-in" />
+      <Header namelink="Выйти" link="signin" />
       <main className="main">
         <section className="profile">
           <div className="profile__avatar-overlay" onClick={onEditAvatar}>

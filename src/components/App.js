@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import api from "../utils/api.js";
+import auth from "../utils/auth.js";
+
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
-import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
 import EditProfilePopup from "./EditProfilePopup";
@@ -110,6 +111,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isCardPopupOpen, setIsCardPopupOpen] = useState(false);
   const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = useState(false);
+  const [isStatusRegisterPopupOpen, setIsStatusRegisterPopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({ name: "", link: "" });
 
@@ -130,6 +132,9 @@ function App() {
     setIsDeleteCardPopupOpen(true);
     setSelectedCard(card);
   };
+  const handleStatusRegister = () => {
+    setIsStatusRegisterPopupOpen(true);
+  };
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -137,6 +142,7 @@ function App() {
     setIsCardPopupOpen(false);
     setIsDeleteCardPopupOpen(false);
     setSelectedCard({ name: "", link: "" });
+    setIsStatusRegisterPopupOpen(false);
   };
 
   // Обработчик Escape
@@ -145,7 +151,8 @@ function App() {
     isAddPlacePopupOpen ||
     isEditAvatarPopupOpen ||
     isCardPopupOpen ||
-    isDeleteCardPopupOpen;
+    isDeleteCardPopupOpen ||
+    isStatusRegisterPopupOpen;
 
   useEffect(() => {
     function closeByEscape(evt) {
@@ -170,23 +177,39 @@ function App() {
     }
   }, [isOpenPopup]);
 
+  const [loggedIn, setLoggedIn] = useState(true);
+
   return (
     <div className="App">
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
-          <Route path="/sign-up" element={<Register />} />
-          <Route path="/sign-in" element={<Login />} />
+          <Route
+            path="/signup"
+            element={
+              <Register
+                onStatusRegister={handleStatusRegister}
+                isOpen={isStatusRegisterPopupOpen}
+                onClose={closeAllPopups}
+              />
+            }
+          />
+          <Route path="/signin" element={<Login />} />
           <Route
             path="/"
             element={
-              <Main
-                cards={arrayCards}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                onCardLike={handleCardLike}
-                onCardDelete={handleDeleteClick}
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                element={
+                  <Main
+                    cards={arrayCards}
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onEditAvatar={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    onCardLike={handleCardLike}
+                    onCardDelete={handleDeleteClick}
+                  />
+                }
               />
             }
           />
