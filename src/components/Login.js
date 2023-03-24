@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Header from "./Header";
-import auth from "../utils/auth.js";
 
-function Login() {
+function Login({ onLogin }) {
   const [formValue, setFormValue] = useState({ email: "", password: "" });
 
-  const navigate = useNavigate();
+  const resetForm = () => {
+    setFormValue({ email: "", password: "" });
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -16,17 +16,9 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    auth
-      .authorize(formValue.password, formValue.email)
-      .then((data) => {
-        navigate("/", { replace: true });
-      })
-      .catch((err) => {
-        console.log("все плохо", err);
-      })
-      .finally(() => {
-        setFormValue({ email: "", password: "" });
-      });
+    onLogin(formValue.password, formValue.email);
+
+    resetForm();
   };
 
   return (

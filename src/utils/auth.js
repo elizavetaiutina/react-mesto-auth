@@ -8,7 +8,7 @@ class Auth {
       if (response.ok) {
         return response.json();
       }
-      return Promise.reject(`Ошибка: ${response.status}`);
+      return Promise.reject(`Статус ошибки: ${response.status}`);
     });
   }
 
@@ -29,13 +29,18 @@ class Auth {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ password: `${password}`, email: `${email}` }),
-    }).then((data) => {
-      if (data) {
-        localStorage.setItem("jwt", data.token);
-        return data;
-      }
     });
   }
+
+  getContent = (token) => {
+    return this._request(`${this._url}/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
 }
 
 const auth = new Auth({

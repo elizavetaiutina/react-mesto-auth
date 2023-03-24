@@ -8,7 +8,9 @@
 /*HEADER*/
 @import url(./blocks/header/header.css);
 @import url(./blocks/logo/logo.css);
-@import url(./blocks/header/header__link/header__link.css);
+@import url(./blocks/header/__link/header__link.css);
+@import url(./blocks/header/__info/header__info.css);
+@import url(./blocks/header/__userinfo/header__userinfo.css);
 
 /*MAIN*/
 @import url(./blocks/main/main.css);

@@ -11,12 +11,21 @@ function Main({
   onCardClick,
   onCardLike,
   onCardDelete,
+  onSignOut,
+  userData,
+  loggedIn,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
   return (
     <>
-      <Header namelink="Выйти" link="signin" />
+      <Header
+        namelink="Выйти"
+        link="signin"
+        userData={userData}
+        onSignOut={onSignOut}
+        loggedIn={loggedIn}
+      />
       <main className="main">
         <section className="profile">
           <div className="profile__avatar-overlay" onClick={onEditAvatar}>

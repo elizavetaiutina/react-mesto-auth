@@ -1,15 +1,13 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import Header from "./Header";
-import InfoTooltip from "./InfoTooltip";
 
-import auth from "../utils/auth.js";
-
-function Register({ onStatusRegister, isOpen, onClose }) {
-  const [isBadAnswerOfRequest, setIsBadAnswerOfRequest] = useState(false);
+function Register({ onRegister }) {
   const [formValue, setFormValue] = useState({ email: "", password: "" });
 
-  const navigate = useNavigate();
+  const resetForm = () => {
+    setFormValue({ email: "", password: "" });
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -19,29 +17,13 @@ function Register({ onStatusRegister, isOpen, onClose }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    auth
-      .register(formValue.password, formValue.email)
-      .then(() => {
-        setIsBadAnswerOfRequest(false);
-        //onStatusRegister();
-        //navigate("/signin", { replace: true }); //после регистрации прводим user на стр авторизации
-      })
-      .then(() => {
-        navigate("/signin", { replace: true }); //после регистрации прводим user на стр авторизации
-      })
-      .catch((err) => {
-        setIsBadAnswerOfRequest(true);
-        onStatusRegister();
-      })
-      .finally(() => {
-        //onStatusRegister();
-        setFormValue({ email: "", password: "" });
-      });
+    onRegister(formValue.password, formValue.email);
+
+    resetForm();
   };
 
   return (
     <>
-      <InfoTooltip isOpen={isOpen} errorAnswerOfServer={isBadAnswerOfRequest} onClose={onClose} />
       <Header namelink="Войти" link="signin" />
       <main className="sign">
         <h1 className="sign__title">Регистрация</h1>

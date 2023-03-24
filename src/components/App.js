@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import api from "../utils/api.js";
 import auth from "../utils/auth.js";
 
@@ -11,6 +11,7 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import DeleteCardPopup from "./DeleteCardPopup";
 import ImagePopup from "./ImagePopup";
+import InfoTooltip from "./InfoTooltip";
 import Register from "./Register";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
@@ -111,7 +112,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isCardPopupOpen, setIsCardPopupOpen] = useState(false);
   const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = useState(false);
-  const [isStatusRegisterPopupOpen, setIsStatusRegisterPopupOpen] = useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({ name: "", link: "" });
 
@@ -132,8 +133,8 @@ function App() {
     setIsDeleteCardPopupOpen(true);
     setSelectedCard(card);
   };
-  const handleStatusRegister = () => {
-    setIsStatusRegisterPopupOpen(true);
+  const handleInfoTooltip = () => {
+    setIsInfoTooltipPopupOpen(true);
   };
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
@@ -142,7 +143,7 @@ function App() {
     setIsCardPopupOpen(false);
     setIsDeleteCardPopupOpen(false);
     setSelectedCard({ name: "", link: "" });
-    setIsStatusRegisterPopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
   };
 
   // Обработчик Escape
@@ -152,7 +153,7 @@ function App() {
     isEditAvatarPopupOpen ||
     isCardPopupOpen ||
     isDeleteCardPopupOpen ||
-    isStatusRegisterPopupOpen;
+    isInfoTooltipPopupOpen;
 
   useEffect(() => {
     function closeByEscape(evt) {
@@ -177,39 +178,101 @@ function App() {
     }
   }, [isOpenPopup]);
 
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState("");
+  const [isFailedRequestOfRegister, setIsFailedRequestOfRegister] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    tokenCheck();
+  }, [loggedIn]);
+
+  const tokenCheck = () => {
+    const jwt = localStorage.getItem("jwt");
+
+    if (jwt) {
+      auth
+        .getContent(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          setUserData(res.data.email);
+          navigate("/", { replace: true });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const onRegister = (password, email) => {
+    auth
+      .register(password, email)
+      .then((data) => {
+        if (!data) {
+          throw new Error("Что-то пошло не так");
+        }
+        console.log("Регистрация", data);
+      })
+      .then(() => {
+        setIsFailedRequestOfRegister(false); //запрос успешен
+        handleInfoTooltip();
+        navigate("/signin", { replace: true });
+      })
+      .catch((err) => {
+        console.log("Некорректно заполнено одно из полей");
+        setIsFailedRequestOfRegister(true);
+        handleInfoTooltip();
+      });
+  };
+
+  const onLogin = (password, email) => {
+    auth
+      .authorize(password, email)
+      .then((data) => {
+        if (!data) {
+          throw new Error("Что-то пошло не так");
+        }
+        if (data) {
+          setLoggedIn(true);
+          localStorage.setItem("jwt", data.token);
+          return data;
+        }
+      })
+      .then(() => {
+        navigate("/", { replace: true });
+      })
+      .catch((err) => {
+        console.log("Неправильный логин или пароль");
+      });
+  };
+
+  const onSignOut = () => {
+    localStorage.removeItem("jwt");
+    setLoggedIn(false);
+    navigate("/signin", { replace: true });
+  };
 
   return (
     <div className="App">
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
-          <Route
-            path="/signup"
-            element={
-              <Register
-                onStatusRegister={handleStatusRegister}
-                isOpen={isStatusRegisterPopupOpen}
-                onClose={closeAllPopups}
-              />
-            }
-          />
-          <Route path="/signin" element={<Login />} />
+          <Route path="/signup" element={<Register onRegister={onRegister} />} />
+          <Route path="/signin" element={<Login onLogin={onLogin} />} />
           <Route
             path="/"
             element={
               <ProtectedRoute
                 loggedIn={loggedIn}
-                element={
-                  <Main
-                    cards={arrayCards}
-                    onEditProfile={handleEditProfileClick}
-                    onAddPlace={handleAddPlaceClick}
-                    onEditAvatar={handleEditAvatarClick}
-                    onCardClick={handleCardClick}
-                    onCardLike={handleCardLike}
-                    onCardDelete={handleDeleteClick}
-                  />
-                }
+                element={Main}
+                cards={arrayCards}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleDeleteClick}
+                onSignOut={onSignOut}
+                userData={userData}
               />
             }
           />
@@ -242,6 +305,11 @@ function App() {
           card={selectedCard}
         />
         <ImagePopup card={selectedCard} isOpen={isCardPopupOpen} onClose={closeAllPopups} />
+        <InfoTooltip
+          isOpen={isInfoTooltipPopupOpen}
+          errorAnswerOfServer={isFailedRequestOfRegister}
+          onClose={closeAllPopups}
+        />
       </CurrentUserContext.Provider>
     </div>
   );
