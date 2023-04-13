@@ -1,24 +1,22 @@
-import { useState } from "react";
+import { useForm } from "../hooks/useForm";
+import { useEffect } from "react";
 import Header from "./Header";
 
 function Login({ onLogin }) {
-  const [formValue, setFormValue] = useState({ email: "", password: "" });
+  const { values, handleChange, setValues } = useForm({});
+
+  useEffect(() => {
+    resetForm();
+  }, []);
 
   const resetForm = () => {
-    setFormValue({ email: "", password: "" });
-  };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormValue({ ...formValue, [name]: value });
+    setValues({ email: "", password: "" });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    onLogin(formValue.password, formValue.email);
-
-    resetForm();
+    onLogin(values.password, values.email);
   };
 
   return (
@@ -32,7 +30,7 @@ function Login({ onLogin }) {
             name="email"
             className="form-sign__input"
             placeholder="Email"
-            value={formValue.email || ""}
+            value={values.email || ""}
             onChange={handleChange}
             required
           />
@@ -41,7 +39,7 @@ function Login({ onLogin }) {
             name="password"
             className="form-sign__input"
             placeholder="Пароль"
-            value={formValue.password || ""}
+            value={values.password || ""}
             onChange={handleChange}
             required
           />

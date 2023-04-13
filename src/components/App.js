@@ -215,12 +215,14 @@ function App() {
       })
       .then(() => {
         setIsFailedRequestOfRegister(false); //запрос успешен
-        handleInfoTooltip();
+
         navigate("/signin", { replace: true });
       })
       .catch((err) => {
         console.log("Некорректно заполнено одно из полей");
         setIsFailedRequestOfRegister(true);
+      })
+      .finally(() => {
         handleInfoTooltip();
       });
   };
